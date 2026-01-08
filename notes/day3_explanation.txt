@@ -1,0 +1,35 @@
+DAY 3 – MACHINE LEARNING (DELIVERY DELAY PREDICTION)
+
+Objective:
+To predict whether an order will be delivered late and provide a risk signal
+to operations teams before fulfillment.
+
+Problem Formulation:
+The problem is framed as a binary classification task:
+- 1 → Order is Late (actual_time > promised_time)
+- 0 → Order is On-Time (actual_time <= promised_time)
+
+Feature Engineering:
+Since region and traffic data were not available, time-based features were used:
+- hour_of_day: Captures peak vs non-peak delivery hours
+- day_of_week: Captures weekday vs weekend patterns
+
+Model Choice:
+Logistic Regression was selected as a baseline model because:
+- It is interpretable
+- It outputs probabilities suitable for risk assessment
+- It performs well with small feature sets
+
+Model Evaluation:
+- AUC (Area Under ROC Curve) was used as the evaluation metric
+- The AUC score was relatively low, indicating limited predictive signal
+- This is expected due to missing operational features such as region,
+  rider availability, and traffic conditions
+
+Deployment:
+The trained model was saved as a .pkl file and integrated into the Streamlit
+application as a Delivery Delay Risk Calculator.
+
+Business Value:
+The model provides a probabilistic risk score that helps operations teams
+anticipate delays and take preventive action.

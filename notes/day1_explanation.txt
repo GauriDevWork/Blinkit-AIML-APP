@@ -1,0 +1,26 @@
+DAY 1 – DATA ENGINEERING & ROAS CALCULATION
+
+Problem:
+Marketing data is available at a daily level, while orders data is transactional.
+There is no direct campaign ID to link orders with marketing spend.
+
+Granularity Mismatch:
+Orders table contains thousands of rows per day.
+Marketing table contains one row per day per channel.
+Direct join is not possible without aggregation.
+
+Solution:
+1. Aggregated orders data to daily revenue using DATE(order_date).
+2. Aggregated marketing data to daily spend.
+3. Joined both datasets on date using LEFT JOIN.
+4. Calculated ROAS = Total Revenue / Total Spend.
+
+Why LEFT JOIN:
+Marketing spend can exist even if no orders are placed on that day.
+
+Edge Cases Handled:
+- Zero revenue days → revenue set to 0 using COALESCE.
+- Zero spend days → ROAS set to NULL to avoid misleading infinite values.
+
+Business Meaning:
+ROAS helps identify profitable vs loss-making marketing days and supports campaign optimization.

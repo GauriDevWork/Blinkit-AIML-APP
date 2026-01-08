@@ -1,0 +1,37 @@
+DAY 4 – GENERATIVE AI (RAG-BASED BUSINESS ASSISTANT)
+
+Objective:
+To enable business users to understand customer sentiment and complaints
+using natural language questions.
+
+Approach:
+A Retrieval-Augmented Generation (RAG) pipeline was implemented using
+real customer feedback data.
+
+Retrieval:
+- Customer feedback text is converted into embeddings using
+  sentence-transformers
+- Cosine similarity is used to retrieve the most relevant feedback
+  for a user’s question
+
+Generation:
+- Retrieved feedback is passed as context to a Groq-hosted LLM
+- The LLM generates grounded insights based only on the retrieved feedback
+
+Why RAG:
+- Prevents hallucination
+- Ensures answers are grounded in real customer feedback
+- Improves trust and explainability of AI responses
+
+Technology Choice:
+- Groq API was used as allowed by the project guidelines
+- Local embeddings were used to reduce cost and improve performance
+
+Outcome:
+Business users can ask questions such as:
+"Why are customers unhappy about delivery?"
+and receive concise, explainable insights supported by actual feedback data.
+
+Business Value:
+The AI assistant helps identify root causes of dissatisfaction and supports
+data-driven improvements to customer experience.

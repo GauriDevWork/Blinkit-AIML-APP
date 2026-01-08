@@ -1,0 +1,47 @@
+DAY 2 – DATA VISUALIZATION & BUSINESS INSIGHTS (STREAMLIT)
+
+Objective:
+To transform the SQL-based ROAS dataset into an interactive dashboard that allows
+business managers to quickly understand marketing performance.
+
+Data Source:
+The dashboard consumes the Master ROAS dataset generated in PostgreSQL by joining
+daily marketing spend with aggregated daily revenue.
+
+Key Features Implemented:
+1. Date Filter:
+   - Allows users to select a custom date range.
+   - Enables focused analysis for specific campaigns or periods.
+
+2. KPI Cards:
+   - Total Revenue: Shows revenue generated in the selected period.
+   - Total Marketing Spend: Shows total ad spend.
+   - Average ROAS: Indicates overall campaign efficiency.
+
+3. Dual-Axis Visualization:
+   - Bar Chart (Right Axis): Marketing Spend.
+   - Line Chart (Left Axis): Revenue.
+   - Helps visually detect cases where spend increases but revenue does not.
+
+4. ROAS Interpretation:
+   - Automatically flags inefficient marketing periods when ROAS < 1.
+   - Provides instant business insight without manual analysis.
+
+5. Low-ROAS Diagnostic Table:
+   - Displays individual days where ROAS < 1.
+   - Helps managers identify loss-making days for corrective action.
+
+Business Value:
+The dashboard enables non-technical stakeholders to:
+- Monitor campaign effectiveness in real time.
+- Identify underperforming marketing spend.
+- Make data-driven decisions without querying databases.
+
+Design Choices:
+- SQL is used for data aggregation to maintain a single source of truth.
+- Streamlit is used only for visualization and interaction.
+- Logic is kept modular and readable for maintainability.
+
+Outcome:
+Day 2 successfully converts historical data into actionable insights,
+bridging the gap between raw analytics and business decision-making.
