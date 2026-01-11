@@ -13,8 +13,9 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("📊 Blinkit Marketing & Revenue Dashboard")
-
+st.title("Blinkit Marketing & Revenue Dashboard")
+st.header("Marketing Trends")
+st.caption("Analyze marketing spend, revenue, and ROAS over time.")
 # -----------------------------------
 # Database Connection
 # -----------------------------------
@@ -74,7 +75,7 @@ model = joblib.load("src/delay_prediction_model.pkl")
 # -----------------------------------
 # Sidebar Filters
 # -----------------------------------
-st.sidebar.header("📅 Filter Data")
+st.sidebar.header("Filter Data")
 
 start_date = st.sidebar.date_input(
     "Start Date", df["date"].min().date()
@@ -109,9 +110,9 @@ col3.metric("Average ROAS", f"{avg_roas:.2f}x" if pd.notna(avg_roas) else "N/A")
 # -----------------------------------
 if pd.notna(avg_roas):
     if avg_roas < 1:
-        st.warning("⚠️ Marketing spend is not generating proportional revenue (ROAS < 1)")
+        st.warning("Marketing spend is not generating proportional revenue (ROAS < 1)")
     else:
-        st.success("✅ Marketing campaigns are profitable (ROAS ≥ 1)")
+        st.success("Marketing campaigns are profitable (ROAS ≥ 1)")
 
 # -----------------------------------
 # Revenue vs Spend Chart (Dual Axis)
@@ -154,9 +155,9 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 # -----------------------------------
-# Low ROAS Days Table (Optional but Powerful)
+# Low ROAS Days Table 
 # -----------------------------------
-st.subheader("📉 Low ROAS Days (Below 1x)")
+st.subheader("Low ROAS Days (Below 1x)")
 
 low_roas_days = filtered_df[filtered_df["roas"] < 1][
     ["date", "total_spend", "total_revenue", "roas"]
@@ -169,10 +170,10 @@ else:
 
 
 # ===================================
-# 🚚 Delivery Delay Risk Calculator
+#  Delivery Delay Risk Calculator
 # ===================================
 st.divider()
-st.header("🚚 Delivery Delay Risk Calculator")
+st.header("Delivery Delay Risk Calculator")
 
 col1, col2 = st.columns(2)
 
@@ -217,10 +218,10 @@ if st.button("Predict Delay Risk"):
         st.error("🔴 High Risk of Delay")
 
 # ===================================
-# 🤖 AI Business Assistant (RAG)
+#  AI Business Assistant (RAG)
 # ===================================
 st.divider()
-st.header("🤖 AI Business Assistant")
+st.header("AI Business Assistant")
 st.caption("Ask questions related to customer feedback, complaints, or experience (e.g., delivery delays, product quality).")
 user_query = st.text_input(
     "Ask a business question (e.g., 'Why are customers unhappy about delivery?')"
@@ -235,8 +236,6 @@ if st.button("Ask AI"):
         st.subheader("AI Insight")
         st.write(answer)
 
-        with st.expander("🔍 Feedback Used"):
-            for i, txt in enumerate(retrieved, 1):
-                st.write(f"{i}. {txt}")
+       
     else:
         st.warning("Please enter a question.")
