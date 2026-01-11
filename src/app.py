@@ -24,7 +24,7 @@ def load_data():
         host="localhost",
         database="blinkit_analytics",
         user="postgres",
-        password="postgres123"  # <-- your updated password
+        password="postgres123" 
     )
 
     query = """
