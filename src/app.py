@@ -20,12 +20,14 @@ st.caption("Analyze marketing spend, revenue, and ROAS over time.")
 # Database Connection
 # -----------------------------------
 def load_data():
-    conn = psycopg2.connect(
-        host="localhost",
-        database="blinkit_analytics",
-        user="postgres",
-        password="postgres123" 
-    )
+    # conn = psycopg2.connect(
+    #     host="localhost",
+    #     database="blinkit_analytics",
+    #     user="postgres",
+    #     password="postgres123" 
+    # )
+
+    conn = psycopg2.connect("postgresql://quickcommerce:5c9A9OqVnch0aWiTksYW8MNGd0bj9vZq@dpg-d73kuv6a2pns73a8rr70-a/quickcommerce_m1xc")
 
     query = """
     WITH daily_revenue AS (
