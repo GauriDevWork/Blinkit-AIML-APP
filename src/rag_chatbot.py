@@ -1,62 +1,43 @@
 import os
 import pandas as pd
-import numpy as np
 import streamlit as st
 from groq import Groq
-from sklearn.metrics.pairwise import cosine_similarity
 
 # -----------------------------
-# Cached: Load feedback data
+# Load feedback
 # -----------------------------
 @st.cache_data
 def load_feedback():
-    FEEDBACK_PATH = "Data/feedback_data.csv"
-    df = pd.read_csv(FEEDBACK_PATH)
-    texts = df["feedback_text"].astype(str).tolist()
-    return texts
+    df = pd.read_csv("Data/feedback_data.csv")
+    return df["feedback_text"].astype(str).tolist()
 
 # -----------------------------
-# Cached: Load embedding model
+# Simple retrieval (lightweight)
 # -----------------------------
-@st.cache_resource
-def load_embedder():
-    from sentence_transformers import SentenceTransformer
-    return SentenceTransformer("paraphrase-MiniLM-L3-v2")  # lighter model
+def retrieve_feedback(query, top_k=5):
+    texts = load_feedback()
 
-# -----------------------------
-# Cached: Compute embeddings
-# -----------------------------
-@st.cache_resource
-def get_embeddings(texts):
-    model = load_embedder()
-    return model.encode(texts, show_progress_bar=False)
+    scored = []
+    for text in texts:
+        score = sum(word in text.lower() for word in query.lower().split())
+        scored.append((text, score))
+
+    scored.sort(key=lambda x: x[1], reverse=True)
+
+    return [t[0] for t in scored[:top_k]]
 
 # -----------------------------
 # Groq client
 # -----------------------------
 @st.cache_resource
-def get_groq_client():
+def get_client():
     return Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # -----------------------------
-# Retrieval function
-# -----------------------------
-def retrieve_feedback(query, top_k=5):
-    texts = load_feedback()
-    embeddings = get_embeddings(texts)
-    model = load_embedder()
-
-    query_embedding = model.encode([query])
-    sims = cosine_similarity(query_embedding, embeddings)[0]
-    top_idx = np.argsort(sims)[-top_k:][::-1]
-
-    return [texts[i] for i in top_idx]
-
-# -----------------------------
-# Generation function
+# Generate answer
 # -----------------------------
 def generate_answer(query, retrieved_texts):
-    client = get_groq_client()
+    client = get_client()
 
     context = "\n".join(f"- {t}" for t in retrieved_texts)
 
@@ -70,7 +51,7 @@ Question:
 Customer Feedback:
 {context}
 
-Answer with root causes and actionable insights.
+Give actionable insights.
 """
 
     completion = client.chat.completions.create(

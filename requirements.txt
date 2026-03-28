@@ -7,5 +7,4 @@ seaborn
 psycopg2-binary
 plotly
 groq
-sentence-transformers
 joblib
