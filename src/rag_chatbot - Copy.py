@@ -1,63 +1,42 @@
 import os
 import pandas as pd
 import numpy as np
-import streamlit as st
 from groq import Groq
+from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # -----------------------------
-# Cached: Load feedback data
+# Load feedback data
 # -----------------------------
-@st.cache_data
-def load_feedback():
-    FEEDBACK_PATH = "Data/feedback_data.csv"
-    df = pd.read_csv(FEEDBACK_PATH)
-    texts = df["feedback_text"].astype(str).tolist()
-    return texts
+FEEDBACK_PATH = "Data/feedback_data.csv"
+feedback_df = pd.read_csv(FEEDBACK_PATH)
+
+feedback_texts = feedback_df["feedback_text"].astype(str).tolist()
 
 # -----------------------------
-# Cached: Load embedding model
+# Embedding model (local)
 # -----------------------------
-@st.cache_resource
-def load_embedder():
-    from sentence_transformers import SentenceTransformer
-    return SentenceTransformer("paraphrase-MiniLM-L3-v2")  # lighter model
-
-# -----------------------------
-# Cached: Compute embeddings
-# -----------------------------
-@st.cache_resource
-def get_embeddings(texts):
-    model = load_embedder()
-    return model.encode(texts, show_progress_bar=False)
+embedder = SentenceTransformer("all-MiniLM-L6-v2")
+feedback_embeddings = embedder.encode(feedback_texts, show_progress_bar=False)
 
 # -----------------------------
 # Groq client
 # -----------------------------
-@st.cache_resource
-def get_groq_client():
-    return Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # -----------------------------
 # Retrieval function
 # -----------------------------
 def retrieve_feedback(query, top_k=5):
-    texts = load_feedback()
-    embeddings = get_embeddings(texts)
-    model = load_embedder()
-
-    query_embedding = model.encode([query])
-    sims = cosine_similarity(query_embedding, embeddings)[0]
+    query_embedding = embedder.encode([query])
+    sims = cosine_similarity(query_embedding, feedback_embeddings)[0]
     top_idx = np.argsort(sims)[-top_k:][::-1]
-
-    return [texts[i] for i in top_idx]
+    return [feedback_texts[i] for i in top_idx]
 
 # -----------------------------
 # Generation function
 # -----------------------------
 def generate_answer(query, retrieved_texts):
-    client = get_groq_client()
-
     context = "\n".join(f"- {t}" for t in retrieved_texts)
 
     prompt = f"""
